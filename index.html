@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Profile & Tool - Gede Gacok</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        wa: {
+                            accent: '#00a884',
+                            accentHover: '#008f70',
+                            // Dark Theme Palette
+                            darkBg: '#0b141a',
+                            darkHeader: '#202c33',
+                            darkCard: '#111b21',
+                            darkBubbleIn: '#202c33',
+                            darkBubbleOut: '#005c4b',
+                            darkText: '#e9edef',
+                            darkSubtext: '#8696a0',
+                            
+                            // Light Theme Palette
+                            lightBg: '#efeae2',
+                            lightHeader: '#008069',
+                            lightCard: '#ffffff',
+                            lightBubbleIn: '#ffffff',
+                            lightBubbleOut: '#d9fdd3',
+                            lightText: '#111b21',
+                            lightSubtext: '#667781'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #111b21;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #374045;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f0f2f5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cccccc;
+            border-radius: 3px;
+        }
+        
+        /* WhatsApp Chat Pattern Background */
+        .wa-pattern-dark {
+            background-color: #0b141a;
+            background-image: radial-gradient(#1f2c34 1.2px, transparent 1.2px);
+            background-size: 18px 18px;
+        }
+
+        .wa-pattern-light {
+            background-color: #efeae2;
+            background-image: radial-gradient(#cbd5e1 1.2px, transparent 1.2px);
+            background-size: 18px 18px;
+        }
+
+        /* Pulse Badge Animation */
+        @keyframes customPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.08); }
+        }
+        .pulse-badge {
+            animation: customPulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-wa-lightBg dark:bg-wa-darkBg text-wa-lightText dark:text-wa-darkText font-sans min-h-screen flex flex-col items-center justify-between p-2 sm:p-4 wa-pattern-light dark:wa-pattern-dark selection:bg-wa-accent selection:text-white transition-colors duration-300">
+
+    <!-- Top WhatsApp Header Bar -->
+    <header class="w-full max-w-md bg-wa-lightHeader dark:bg-wa-darkHeader text-white px-4 py-3 flex items-center justify-between rounded-t-2xl shadow-lg border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-arrow-left text-white/80 text-lg cursor-pointer hover:text-white transition" title="Kembali"></i>
+            <div>
+                <h1 class="text-base font-medium leading-tight flex items-center gap-1.5">
+                    WhatsApp Profile Lookup
+                </h1>
+                <p class="text-[11px] text-emerald-200 dark:text-wa-accent flex items-center gap-1 font-medium">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 dark:bg-wa-accent inline-block animate-pulse"></span> Profil Terverifikasi
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-white/80 text-lg">
+            <!-- Theme Toggle Button (Dark / Light) -->
+            <button onclick="toggleTheme()" class="hover:text-white transition p-1" title="Ganti Tema">
+                <i id="theme-icon" class="fa-solid fa-sun text-amber-300"></i>
+            </button>
+            <i class="fa-solid fa-qrcode hover:text-white cursor-pointer transition"></i>
+            <i class="fa-solid fa-ellipsis-vertical hover:text-white cursor-pointer transition"></i>
+        </div>
+    </header>
+
+    <!-- Main Card Container -->
+    <main class="w-full max-w-md bg-wa-lightCard dark:bg-wa-darkCard border-x border-b border-gray-200 dark:border-gray-800 rounded-b-2xl shadow-2xl overflow-hidden flex-1 flex flex-col transition-colors duration-300">
+        
+        <!-- Profile Picture & Names Section -->
+        <div class="relative bg-gray-100 dark:bg-wa-darkHeader/60 pt-8 pb-8 flex flex-col items-center justify-center border-b border-gray-200 dark:border-gray-800/80 transition-colors duration-300">
+            <!-- Profile Avatar Container -->
+            <div class="relative group cursor-pointer" onclick="playImageSound()" title="Klik foto profil Gede Gacok">
+                <div class="w-36 h-36 sm:w-44 sm:h-44 rounded-full p-1 bg-gradient-to-tr from-wa-accent to-emerald-400 shadow-2xl transition transform group-hover:scale-105 duration-300">
+                    <img id="user-avatar" 
+                         src="https://i.imgur.com/nFS1C5x.jpeg" 
+                         alt="Gede Gacok" 
+                         onerror="this.src='https://placehold.co/400x400/00a884/ffffff?text=Gede+Gacok'"
+                         class="w-full h-full rounded-full object-cover bg-wa-darkHeader">
+                </div>
+                <!-- Verified Badge Icon -->
+                <div class="absolute bottom-1 right-2 bg-wa-accent text-white p-2.5 rounded-full shadow-lg border-2 border-white dark:border-wa-darkCard flex items-center justify-center pulse-badge" title="Akun Terverifikasi">
+                    <i class="fa-solid fa-circle-check text-lg"></i>
+                </div>
+            </div>
+
+            <!-- Profile Names Display -->
+            <div class="text-center mt-4 px-4">
+                <!-- Primary Name: Gede Gacok -->
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-wide flex items-center justify-center gap-2">
+                    Gede Gacok
+                    <i class="fa-solid fa-badge-check text-wa-accent text-xl" title="Terverifikasi"></i>
+                </h2>
+                <!-- Secondary / Real Name: I Gede Satya Kumara (Smaller Font Size) -->
+                <p class="text-xs sm:text-sm font-medium text-gray-500 dark:text-wa-darkSubtext mt-0.5 tracking-normal">
+                    (Nama Asli: <span class="font-semibold text-gray-700 dark:text-gray-300">I Gede Satya Kumara</span>)
+                </p>
+
+                <!-- Status Online / Live Marker -->
+                <p id="live-status" class="text-wa-accent text-xs mt-2 font-mono flex items-center justify-center gap-1.5 font-medium">
+                    <span class="w-2 h-2 rounded-full bg-wa-accent animate-ping"></span>
+                    online | teraktif di Bali
+                </p>
+            </div>
+        </div>
+
+        <!-- Interactive Buttons Area -->
+        <div class="p-5 space-y-3.5 flex-1 flex flex-col justify-center">
+            
+            <!-- Main Action Button 1: Get WhatsApp Number -->
+            <button onclick="startNumberPrank()" 
+                    class="w-full bg-wa-accent hover:bg-wa-accentHover text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg transition duration-200 flex items-center justify-center gap-3 active:scale-95 text-sm sm:text-base border border-emerald-400/30">
+                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                <span>Dapatkan Nomor WhatsApp Gede Gacok</span>
+            </button>
+
+            <!-- Main Action Button 2: Handsome / Gagah Test -->
+            <button onclick="startHandsomeTest()" 
+                    class="w-full bg-gray-100 dark:bg-wa-darkHeader hover:bg-gray-200 dark:hover:bg-gray-800 text-amber-600 dark:text-amber-400 font-bold py-3 px-4 rounded-xl border border-amber-500/30 transition duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-95 shadow-sm">
+                <i class="fa-solid fa-fire text-amber-500"></i>
+                <span>Cek Level Kegagahan Gede Gacok</span>
+            </button>
+
+            <!-- Main Action Button 3: Interactive Chat Simulator -->
+            <button onclick="openChatSimulator()" 
+                    class="w-full bg-gray-100 dark:bg-wa-darkHeader hover:bg-gray-200 dark:hover:bg-gray-800 text-sky-600 dark:text-sky-400 font-bold py-3 px-4 rounded-xl border border-sky-500/30 transition duration-200 flex items-center justify-center gap-2 text-xs sm:text-sm active:scale-95 shadow-sm">
+                <i class="fa-solid fa-comments text-sky-500"></i>
+                <span>Kirim Chat Langsung ke Gede Gacok</span>
+            </button>
+
+            <!-- Share Button -->
+            <button onclick="shareToWhatsApp()" 
+                    class="w-full bg-transparent hover:bg-gray-200 dark:hover:bg-gray-800/50 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium py-2.5 px-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 transition duration-200 flex items-center justify-center gap-2 text-xs">
+                <i class="fa-solid fa-share-nodes text-wa-accent"></i>
+                <span id="share-btn-text">Bagikan Link Profil Ini Ke WhatsApp</span>
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="p-3 bg-gray-50 dark:bg-wa-darkHeader/50 text-center border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+            <p class="text-[10px] text-wa-lightSubtext dark:text-wa-darkSubtext">
+                WhatsApp Interactive Profile Tool • Gede Gacok (I Gede Satya Kumara) 😂
+            </p>
+        </div>
+    </main>
+
+    <!-- MODAL 1: Loading / Fake Scanning Progress Modal -->
+    <div id="loading-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-wa-darkHeader border border-wa-accent/40 w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl relative text-gray-800 dark:text-white">
+            <div class="w-16 h-16 mx-auto mb-4 relative flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border-4 border-wa-accent/20 animate-ping"></div>
+                <div class="w-12 h-12 rounded-full border-4 border-wa-accent border-t-transparent animate-spin"></div>
+                <i class="fa-solid fa-user-secret absolute text-wa-accent text-xl"></i>
+            </div>
+            
+            <h3 class="text-base font-bold mb-1" id="loading-title">Menghubungkan ke Server WhatsApp...</h3>
+            <p id="loading-status" class="text-xs text-wa-accent font-mono mb-4 h-6 flex items-center justify-center">
+                Memulai enkripsi kontak Gede Gacok...
+            </p>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 dark:bg-wa-darkBg rounded-full h-3 overflow-hidden p-0.5 border border-gray-300 dark:border-gray-700">
+                <div id="progress-bar" class="bg-gradient-to-r from-wa-accent to-emerald-400 h-full rounded-full transition-all duration-300 w-0"></div>
+            </div>
+            <p id="progress-percent" class="text-xs text-gray-500 dark:text-wa-darkSubtext mt-2 font-mono">0%</p>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Reveal Number Result Modal -->
+    <div id="reveal-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-wa-darkHeader border-2 border-wa-accent w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl relative text-gray-800 dark:text-white">
+            <div class="text-5xl mb-2 animate-bounce">😜🎉</div>
+            <h2 class="text-xl font-black text-wa-accent dark:text-white mb-1">KETEMU DEK! GOTCHA!</h2>
+            <p class="text-xs text-gray-600 dark:text-wa-darkSubtext mb-4">Berikut adalah Nomor Resmi WhatsApp Gede Gacok:</p>
+
+            <!-- Number Display -->
+            <div class="bg-emerald-50 dark:bg-wa-darkCard border border-wa-accent/60 rounded-xl p-4 mb-4 shadow-inner">
+                <p class="text-[10px] text-wa-accent font-semibold uppercase tracking-wider mb-1">Nomor Terverifikasi Se-Bali</p>
+                <p id="prank-number-text" class="text-lg sm:text-xl font-black text-amber-500 font-mono tracking-wider break-all select-all">
+                    +62 888-GACOK-JUARA!
+                </p>
+            </div>
+
+            <!-- Funny Explanation -->
+            <p class="text-xs text-gray-600 dark:text-gray-300 italic mb-5 leading-relaxed bg-gray-100 dark:bg-wa-darkBg/60 p-3 rounded-lg border border-gray-200 dark:border-gray-800">
+                "Selamat! Jangan lupa traktir Gede Gacok (Satya) Nasi Jinggo biar nomor WA aslinya langsung dikasih tahu! 😂"
+            </p>
+
+            <button onclick="closeModal('reveal-modal')" 
+                    class="w-full bg-wa-accent hover:bg-wa-accentHover text-white font-extrabold py-3 rounded-xl transition shadow-lg active:scale-95">
+                Tutup Sebelum Gede Gacok Marah! 🏃‍♂️💨
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Handsome / Gagah Test Modal -->
+    <div id="handsome-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white dark:bg-wa-darkHeader border border-amber-500/50 w-full max-w-sm rounded-2xl p-6 text-center shadow-2xl text-gray-800 dark:text-white">
+            <div class="text-4xl mb-2">😎🔥</div>
+            <h3 class="text-lg font-bold mb-1">Analisa AI Level Kegagahan</h3>
+            <p class="text-xs text-gray-500 dark:text-wa-darkSubtext mb-3">Gede Gacok (I Gede Satya Kumara)</p>
+            
+            <div class="my-4 bg-amber-50 dark:bg-wa-darkCard p-4 rounded-xl border border-amber-200 dark:border-gray-800">
+                <span id="handsome-score" class="text-5xl font-black text-amber-500 font-mono">0%</span>
+                <p id="handsome-verdict" class="text-xs font-semibold text-wa-accent mt-2 px-2 py-1 bg-white dark:bg-wa-darkHeader rounded border border-gray-200 dark:border-gray-700">
+                    Menghitung aura kegagahan Gede Gacok...
+                </p>
+            </div>
+
+            <p id="handsome-roast" class="text-xs text-gray-600 dark:text-gray-300 italic mb-5 min-h-[44px] flex items-center justify-center bg-gray-100 dark:bg-wa-darkBg/80 p-2 rounded border border-gray-200 dark:border-gray-800">
+                ...
+            </p>
+
+            <button onclick="closeModal('handsome-modal')" 
+                    class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-2.5 rounded-xl transition active:scale-95">
+                Mengaku Kalah Dengan Gede Gacok 😂
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Interactive Fake Chat Simulator Modal -->
+    <div id="chat-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 z-50">
+        <div class="bg-wa-lightBg dark:bg-wa-darkBg border border-gray-300 dark:border-gray-700 w-full max-w-md h-[550px] rounded-2xl flex flex-col shadow-2xl overflow-hidden text-gray-800 dark:text-white">
+            
+            <!-- Chat Header -->
+            <div class="bg-wa-lightHeader dark:bg-wa-darkHeader p-3 flex items-center justify-between text-white shadow">
+                <div class="flex items-center gap-3">
+                    <img src="https://i.imgur.com/nFS1C5x.jpeg" 
+                         onerror="this.src='https://placehold.co/100x100/00a884/ffffff?text=GG'"
+                         class="w-10 h-10 rounded-full object-cover border border-white/40">
+                    <div>
+                        <h4 class="font-bold text-sm leading-tight flex items-center gap-1">
+                            Gede Gacok
+                            <i class="fa-solid fa-circle-check text-emerald-300 dark:text-wa-accent text-xs"></i>
+                        </h4>
+                        <p class="text-[10px] text-gray-200/80">I Gede Satya Kumara</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('chat-modal')" class="text-white/80 hover:text-white p-2 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Chat Messages Display Container -->
+            <div id="chat-messages" class="flex-1 p-3 overflow-y-auto space-y-3 wa-pattern-light dark:wa-pattern-dark text-xs">
+                <div class="text-center my-2">
+                    <span class="bg-white/80 dark:bg-wa-darkHeader/90 text-gray-600 dark:text-wa-darkSubtext text-[10px] px-3 py-1 rounded-md border border-gray-200 dark:border-gray-800 shadow-sm">
+                        🔒 Pesan dienkripsi secara aman oleh Gede Gacok.
+                    </span>
+                </div>
+                <!-- Initial Bot Greeting -->
+                <div class="flex justify-start mb-2">
+                    <div class="bg-wa-lightBubbleIn dark:bg-wa-darkBubbleIn text-gray-800 dark:text-white p-3 rounded-xl rounded-tl-none max-w-[85%] shadow border border-gray-200 dark:border-gray-700">
+                        <p class="font-bold text-[10px] text-wa-accent mb-0.5">Gede Gacok (Satya Kumara)</p>
+                        <p class="leading-relaxed">Halo bro! Ini Gede Gacok asli. Ada perlu apa nih? Mau minta nomor WA atau mau ngajak nongkrong/COD Nasi Jinggo? 🚀</p>
+                        <span class="text-[9px] text-gray-400 dark:text-wa-darkSubtext block text-right mt-1" id="chat-time-init">
+                            12:00
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="bg-gray-200 dark:bg-wa-darkHeader p-2.5 flex items-center gap-2 border-t border-gray-300 dark:border-gray-800">
+                <input type="text" id="chat-input" placeholder="Ketik pesan untuk Gede Gacok..." 
+                       class="flex-1 bg-white dark:bg-wa-darkCard text-gray-800 dark:text-white text-xs rounded-full px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-wa-accent border border-gray-300 dark:border-gray-700 placeholder-gray-400 dark:placeholder-wa-darkSubtext"
+                       onkeypress="if(event.key==='Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" class="bg-wa-accent hover:bg-wa-accentHover text-white w-9 h-9 rounded-full flex items-center justify-center transition active:scale-95 shadow">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set Initial Chat Time
+        document.getElementById('chat-time-init').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        // Web Audio API Synthesizer
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playBeep(freq = 500, duration = 0.1, type = 'sine') {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        function playFanfare() {
+            const notes = [523.25, 659.25, 783.99, 1046.50, 880, 1046.50];
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    playBeep(freq, 0.15, 'triangle');
+                }, index * 120);
+            });
+        }
+
+        function playImageSound() {
+            playBeep(300, 0.1, 'sawtooth');
+            setTimeout(() => playBeep(600, 0.15, 'sawtooth'), 100);
+        }
+
+        // Dark / Light Theme Toggle Function
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon text-gray-200';
+            } else {
+                html.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-300';
+            }
+        }
+
+        // Feature 1: Number Scanner
+        function startNumberPrank() {
+            const loadingModal = document.getElementById('loading-modal');
+            const progressBar = document.getElementById('progress-bar');
+            const progressPercent = document.getElementById('progress-percent');
+            const loadingStatus = document.getElementById('loading-status');
+
+            loadingModal.classList.remove('hidden');
+            progressBar.style.width = '0%';
+            progressPercent.innerText = '0%';
+
+            const steps = [
+                { percent: 15, text: "Menghubungkan ke server WhatsApp..." },
+                { percent: 35, text: "Mencari kontak Gede Gacok..." },
+                { percent: 60, text: "Mencari sinyal jomblo Gede Gacok..." },
+                { percent: 85, text: "Mengambil data kontak rahasia..." },
+                { percent: 100, text: "Nomor Berhasil Ditemukan! Membuka..." }
+            ];
+
+            let idx = 0;
+            const interval = setInterval(() => {
+                if (idx < steps.length) {
+                    const step = steps[idx];
+                    progressBar.style.width = step.percent + '%';
+                    progressPercent.innerText = step.percent + '%';
+                    loadingStatus.innerText = step.text;
+                    playBeep(400 + (idx * 120), 0.08);
+                    idx++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingModal.classList.add('hidden');
+                        showNumberResult();
+                    }, 400);
+                }
+            }, 600);
+        }
+
+        function showNumberResult() {
+            const modal = document.getElementById('reveal-modal');
+            modal.classList.remove('hidden');
+            playFanfare();
+
+            // Trigger Confetti
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Feature 2: Handsome / Gagah Meter Test
+        const roastsGacok = [
+            "Tingkat kegagahan 99.9% saat pakai kacamata hitam di malam hari!",
+            "Gagah banget bro! Katanya cewek-cewek Bali langsung auto-salfok kalau Gede Gacok lewat.",
+            "Skor kegagahan terdeteksi setara dengan Striker Timnas Pasaran Malam 😂",
+            "Muka ganteng, tapi sayang hobi pinjem hotspot kenceng-kenceng!",
+            "Tingkat kegagahan melonjak 200% pas abis traktir Nasi Jinggo."
+        ];
+
+        function startHandsomeTest() {
+            const modal = document.getElementById('handsome-modal');
+            const scoreEl = document.getElementById('handsome-score');
+            const verdictEl = document.getElementById('handsome-verdict');
+            const roastEl = document.getElementById('handsome-roast');
+
+            modal.classList.remove('hidden');
+            scoreEl.innerText = "0%";
+            verdictEl.innerText = "Memindai aura Gede Gacok...";
+            roastEl.innerText = "...";
+
+            let currentScore = 0;
+            const targetScore = Math.floor(Math.random() * 30) + 70;
+
+            const countInterval = setInterval(() => {
+                if (currentScore < targetScore) {
+                    currentScore += 2;
+                    if (currentScore > targetScore) currentScore = targetScore;
+                    scoreEl.innerText = currentScore + "%";
+                    playBeep(300 + (currentScore * 5), 0.02);
+                } else {
+                    clearInterval(countInterval);
+                    verdictEl.innerText = "Hasil Terverifikasi Oleh AI Bali!";
+                    const randomRoast = roastsGacok[Math.floor(Math.random() * roastsGacok.length)];
+                    roastEl.innerText = `"${randomRoast}"`;
+                    playBeep(880, 0.2, 'triangle');
+                }
+            }, 30);
+        }
+
+        // Feature 3: Interactive Chat Simulator
+        const gacokBotReplies = [
+            "Sabar bro, Gede Gacok lagi sibuk nongkrong nih!",
+            "Jangan ganggu dulu, lagi COD Nasi Jinggo!",
+            "Minta nomor WA? Bayar dulu pake kuota 10GB! 😂",
+            "Woy! Jangan spam chat, HP Gede Gacok lagi dipake hotspot!",
+            "Info game gacor hari ini ada gak bro?",
+            "Lagi offline bro, lagi melatih fisik biar makin gacok se-Bali! 🔥"
+        ];
+
+        function openChatSimulator() {
+            document.getElementById('chat-modal').classList.remove('hidden');
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+
+            // Append User Message Bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = "flex justify-end mb-2";
+            userBubble.innerHTML = `
+                <div class="bg-wa-lightBubbleOut dark:bg-wa-darkBubbleOut text-gray-800 dark:text-white p-2.5 rounded-xl rounded-tr-none max-w-[80%] shadow border border-emerald-200 dark:border-emerald-800">
+                    <p class="leading-relaxed">${escapeHtml(text)}</p>
+                    <span class="text-[9px] text-emerald-700 dark:text-emerald-200 block text-right mt-1">
+                        ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} <i class="fa-solid fa-check-double text-sky-500"></i>
+                    </span>
+                </div>
+            `;
+            chatMessages.appendChild(userBubble);
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            playBeep(600, 0.05);
+
+            // Simulate Gede Gacok Auto-Reply
+            setTimeout(() => {
+                const replyText = gacokBotReplies[Math.floor(Math.random() * gacokBotReplies.length)];
+                
+                const botBubble = document.createElement('div');
+                botBubble.className = "flex justify-start mb-2";
+                botBubble.innerHTML = `
+                    <div class="bg-wa-lightBubbleIn dark:bg-wa-darkBubbleIn text-gray-800 dark:text-white p-2.5 rounded-xl rounded-tl-none max-w-[80%] shadow border border-gray-200 dark:border-gray-700">
+                        <p class="font-bold text-[10px] text-wa-accent mb-0.5">Gede Gacok</p>
+                        <p class="leading-relaxed">${replyText}</p>
+                        <span class="text-[9px] text-gray-400 dark:text-wa-darkSubtext block text-right mt-1">
+                            ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </span>
+                    </div>
+                `;
+                chatMessages.appendChild(botBubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                playBeep(750, 0.08);
+            }, 1000);
+        }
+
+        // Feature 4: Share to WhatsApp Button
+        function shareToWhatsApp() {
+            const shareBtnText = document.getElementById('share-btn-text');
+            const currentUrl = window.location.href;
+            const message = `Woy liat nih, Profil WhatsApp Resmi Gede Gacok (I Gede Satya Kumara)! Dapatkan nomor WA & cek level kegagahannya disini: ${currentUrl}`;
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+
+            window.open(waUrl, '_blank');
+            shareBtnText.innerText = "Berhasil Membuka WhatsApp!";
+            setTimeout(() => {
+                shareBtnText.innerText = "Bagikan Link Profil Ini Ke WhatsApp";
+            }, 3000);
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/[&<>"']/g, function(m) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[m];
+            });
+        }
+    </script>
+</body>
+</html>
